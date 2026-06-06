@@ -1,0 +1,303 @@
+---
+import { pageIslandsCopy } from '$lib/i18n';
+---
+
+<script>
+  let demo = $state(0);
+  let doubled = $derived(demo * 2);
+</script>
+
+<section class="pres-hero">
+  <p class="pres-kicker">{pageIslandsCopy(ctx).presKicker}</p>
+  <h1 class="pres-title">{pageIslandsCopy(ctx).pageTitle}</h1>
+  <p class="pres-lead">{pageIslandsCopy(ctx).lead}</p>
+</section>
+
+<section class="pres-section" aria-labelledby="s1">
+  <h2 id="s1" class="pres-h2">{pageIslandsCopy(ctx).s1h}</h2>
+  <p class="pres-p">
+    {pageIslandsCopy(ctx).s1p}
+  </p>
+  <div class="pres-diagram" role="img" aria-label="{pageIslandsCopy(ctx).diagramAria}">
+    <div class="pres-flow">
+      <span class="pres-box pres-box--srv">{pageIslandsCopy(ctx).flowSrv}</span>
+      <span class="pres-arrow" aria-hidden="true">→</span>
+      <span class="pres-box">{pageIslandsCopy(ctx).flowHtml}</span>
+      <span class="pres-arrow" aria-hidden="true">→</span>
+      <span class="pres-box pres-box--js">{pageIslandsCopy(ctx).flowJs}</span>
+      <span class="pres-arrow" aria-hidden="true">→</span>
+      <span class="pres-box pres-box--ok">{pageIslandsCopy(ctx).flowOk}</span>
+    </div>
+  </div>
+</section>
+
+<section class="pres-section" aria-labelledby="s2">
+  <h2 id="s2" class="pres-h2">{pageIslandsCopy(ctx).s2h}</h2>
+  <div class="pres-table-wrap">
+    <table class="pres-table">
+      <thead>
+        <tr>
+          <th>{pageIslandsCopy(ctx).thDirective}</th>
+          <th>{pageIslandsCopy(ctx).thWhen}</th>
+          <th>{pageIslandsCopy(ctx).thUse}</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><code>client:load</code></td>
+          <td>{pageIslandsCopy(ctx).r1[1]}</td>
+          <td>{pageIslandsCopy(ctx).r1[2]}</td>
+        </tr>
+        <tr>
+          <td><code>client:idle</code></td>
+          <td>{pageIslandsCopy(ctx).r2[1]}</td>
+          <td>{pageIslandsCopy(ctx).r2[2]}</td>
+        </tr>
+        <tr>
+          <td><code>client:visible</code></td>
+          <td>{pageIslandsCopy(ctx).r3[1]}</td>
+          <td>{pageIslandsCopy(ctx).r3[2]}</td>
+        </tr>
+        <tr>
+          <td><code>client:media="…"</code></td>
+          <td>{pageIslandsCopy(ctx).r4[1]}</td>
+          <td>{pageIslandsCopy(ctx).r4[2]}</td>
+        </tr>
+        <tr>
+          <td><code>server:only</code></td>
+          <td>{pageIslandsCopy(ctx).r5[1]}</td>
+          <td>{pageIslandsCopy(ctx).r5[2]}</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<section class="pres-section" aria-labelledby="s3">
+  <h2 id="s3" class="pres-h2">{pageIslandsCopy(ctx).s3h}</h2>
+  <ol class="pres-list">
+    <li>{pageIslandsCopy(ctx).l1}</li>
+    <li>{pageIslandsCopy(ctx).l2}</li>
+    <li>{pageIslandsCopy(ctx).l3}</li>
+    <li>{pageIslandsCopy(ctx).l4}</li>
+  </ol>
+</section>
+
+<section class="pres-section" aria-labelledby="s4">
+  <h2 id="s4" class="pres-h2">{pageIslandsCopy(ctx).s4h}</h2>
+  <p class="pres-p">
+    {pageIslandsCopy(ctx).s4p}
+  </p>
+  <p class="pres-p pres-muted">
+    {pageIslandsCopy(ctx).s4muted}
+  </p>
+</section>
+
+<section class="pres-section" aria-labelledby="s5">
+  <h2 id="s5" class="pres-h2">{pageIslandsCopy(ctx).s5h}</h2>
+  <p class="pres-p">{pageIslandsCopy(ctx).s5p}</p>
+  <div class="pres-demo">
+    <div class="pres-demo-inner" client:visible>
+      <button type="button" class="pres-demo-btn" id="pres-demo-btn" onclick={() => demo++} aria-label="Increment demo counter">
+        +1
+      </button>
+      <div class="pres-demo-out">
+        <span class="pres-demo-val">{demo}</span>
+        <span class="pres-demo-meta">×2 = {doubled}</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="pres-section pres-outro">
+  <h2 class="pres-h2">{pageIslandsCopy(ctx).refh}</h2>
+  <p class="pres-p">
+    {pageIslandsCopy(ctx).refp}
+    <a href="https://nexusjs.dev" target="_blank" rel="noopener noreferrer">nexusjs.dev</a>
+  </p>
+</section>
+
+<style>
+  .pres-hero {
+    padding: 1rem 0 2rem;
+    border-bottom: 1px solid var(--nx-border);
+    margin-bottom: 2rem;
+  }
+  .pres-kicker {
+    margin: 0 0 0.5rem;
+    font-size: 0.75rem;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--nx-accent);
+  }
+  .pres-title {
+    margin: 0 0 0.75rem;
+    font-family: var(--nx-display);
+    font-size: clamp(1.75rem, 4vw, 2.25rem);
+    font-weight: 700;
+    letter-spacing: -0.02em;
+  }
+  .pres-lead {
+    margin: 0;
+    max-width: 40rem;
+    color: var(--nx-muted);
+    line-height: 1.6;
+    font-size: 1.05rem;
+  }
+  .pres-section {
+    margin-bottom: 2.5rem;
+  }
+  .pres-h2 {
+    margin: 0 0 1rem;
+    font-family: var(--nx-display);
+    font-size: 1.2rem;
+    font-weight: 600;
+  }
+  .pres-p {
+    margin: 0 0 1rem;
+    color: var(--nx-text);
+    line-height: 1.65;
+    max-width: 46rem;
+  }
+  .pres-muted {
+    color: var(--nx-muted);
+    font-size: 0.9rem;
+  }
+  .pres-code {
+    font-family: ui-monospace, monospace;
+    font-size: 0.88em;
+    background: var(--nx-surface);
+    padding: 0.12em 0.35em;
+    border-radius: 6px;
+    border: 1px solid var(--nx-border);
+  }
+  .pres-diagram {
+    margin-top: 1.25rem;
+    padding: 1.25rem;
+    border-radius: var(--nx-radius);
+    background: var(--nx-surface);
+    border: 1px solid var(--nx-border);
+    overflow-x: auto;
+  }
+  .pres-flow {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.5rem 0.75rem;
+    font-size: 0.9rem;
+  }
+  .pres-box {
+    padding: 0.4rem 0.75rem;
+    border-radius: 8px;
+    background: rgba(255, 255, 255, 0.06);
+    border: 1px solid var(--nx-border);
+  }
+  .pres-box--srv {
+    border-color: rgba(56, 189, 248, 0.35);
+  }
+  .pres-box--js {
+    border-color: rgba(139, 124, 248, 0.45);
+  }
+  .pres-box--ok {
+    border-color: rgba(52, 211, 153, 0.4);
+  }
+  .pres-arrow {
+    color: var(--nx-muted);
+  }
+  .pres-table-wrap {
+    overflow-x: auto;
+    border-radius: var(--nx-radius);
+    border: 1px solid var(--nx-border);
+  }
+  .pres-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.9rem;
+  }
+  .pres-table th,
+  .pres-table td {
+    padding: 0.65rem 1rem;
+    text-align: left;
+    border-bottom: 1px solid var(--nx-border);
+  }
+  .pres-table th {
+    background: rgba(0, 0, 0, 0.2);
+    font-weight: 600;
+    font-family: var(--nx-display);
+  }
+  .pres-table tr:last-child td {
+    border-bottom: none;
+  }
+  .pres-table code {
+    font-family: ui-monospace, monospace;
+    font-size: 0.85em;
+    color: var(--nx-accent);
+  }
+  .pres-list {
+    margin: 0;
+    padding-left: 1.25rem;
+    max-width: 46rem;
+    line-height: 1.75;
+    color: var(--nx-text);
+  }
+  .pres-list li {
+    margin-bottom: 0.5rem;
+  }
+  .pres-demo {
+    display: flex;
+    justify-content: flex-start;
+    margin-top: 1rem;
+  }
+  .pres-demo-inner {
+    display: flex;
+    align-items: center;
+    gap: 1.25rem;
+    flex-wrap: wrap;
+    padding: 1.25rem 1.5rem;
+    border-radius: var(--nx-radius);
+    background: linear-gradient(145deg, rgba(139, 124, 248, 0.1), var(--nx-surface));
+    border: 1px solid var(--nx-border);
+  }
+  .pres-demo-btn {
+    min-width: 3rem;
+    min-height: 2.75rem;
+    padding: 0 1rem;
+    border-radius: 10px;
+    border: 1px solid var(--nx-border);
+    background: rgba(255, 255, 255, 0.08);
+    color: var(--nx-text);
+    font-weight: 700;
+    font-family: inherit;
+    cursor: pointer;
+  }
+  .pres-demo-btn:hover {
+    background: rgba(139, 124, 248, 0.2);
+    border-color: rgba(139, 124, 248, 0.45);
+  }
+  .pres-demo-out {
+    display: flex;
+    flex-direction: column;
+    gap: 0.2rem;
+    font-family: var(--nx-display);
+    font-size: 1.35rem;
+    font-weight: 700;
+    font-variant-numeric: tabular-nums;
+  }
+  .pres-demo-meta {
+    font-size: 0.85rem;
+    font-weight: 500;
+    color: var(--nx-muted);
+  }
+  .pres-outro {
+    padding-top: 1rem;
+    border-top: 1px solid var(--nx-border);
+  }
+  .pres-outro a {
+    color: var(--nx-accent);
+    text-decoration: none;
+  }
+  .pres-outro a:hover {
+    text-decoration: underline;
+  }
+</style>

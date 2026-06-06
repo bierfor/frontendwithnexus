@@ -1,0 +1,29 @@
+---
+import { getLocale } from '$lib/i18n';
+import { backendBaseUrl } from '$lib/backend-url';
+
+export async function load(ctx) {
+  const locale = getLocale(ctx);
+  return {
+    locale,
+    backend: backendBaseUrl(),
+    head: { title: `Boletín — Puro Flusso` },
+  };
+}
+---
+
+<div class="max-w-xl mx-auto px-6 py-16">
+  <h1 class="font-display text-4xl tracking-tight mb-3">Boletín</h1>
+  <p class="text-[var(--body)] mb-8">Recibe las lecturas más importantes, sin ruido. Temas de interés opcionales (productividad, minimalismo, etc.).</p>
+
+  <nexus-island client:visible src="$lib/islands/lead-form.ts" data-backend="{pretext.backend}">
+    <form class="space-y-4">
+      <input id="email" type="email" required placeholder="tu@email.com" class="w-full bg-[var(--surface)] border border-[var(--border)] px-4 py-3 rounded-xl text-sm focus:outline-none focus:border-[var(--accent)]" />
+      <input id="interests" type="text" placeholder="Intereses (separados por coma): productividad, foco, minimalismo" class="w-full bg-[var(--surface)] border border-[var(--border)] px-4 py-3 rounded-xl text-sm" />
+      <button type="submit" class="btn btn-primary w-full">Suscribirme</button>
+      <p id="lead-status" class="text-xs text-center text-[var(--muted)] h-4"></p>
+    </form>
+  </nexus-island>
+
+  <p class="text-[10px] text-[var(--muted)] mt-8">Respetamos tu bandeja. Baja cuando quieras.</p>
+</div>

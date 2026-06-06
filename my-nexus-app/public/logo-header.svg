@@ -1,0 +1,24 @@
+<svg width="600" height="140" viewBox="0 0 600 140" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <filter id="pf-glow" x="-20%" y="-40%" width="140%" height="180%">
+      <feDropShadow dx="0" dy="2" stdDeviation="3" flood-color="#000000" flood-opacity="0.55" />
+      <feDropShadow dx="0" dy="0" stdDeviation="7" flood-color="#C6A16E" flood-opacity="0.22" />
+    </filter>
+  </defs>
+  <style>
+    .title {
+      font-family: ui-serif, "Playfair Display", Georgia, serif;
+      font-size: 84px;
+      font-weight: 800;
+      fill: #ffffff;
+      letter-spacing: 0.4px;
+      stroke: rgba(0, 0, 0, 0.35);
+      stroke-width: 2.25px;
+      paint-order: stroke fill;
+      stroke-linejoin: round;
+    }
+  </style>
+  <text x="50%" y="92" text-anchor="middle" class="title" filter="url(#pf-glow)">
+    Puro Flusso
+  </text>
+</svg>

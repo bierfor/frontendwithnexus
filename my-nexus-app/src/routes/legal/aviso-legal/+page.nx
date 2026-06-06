@@ -1,0 +1,8 @@
+---
+import { getLocale } from '$lib/i18n';
+export async function load(ctx) { return { locale: getLocale(ctx), head: { title: 'Aviso Legal — Puro Flusso' } }; }
+---
+<div class="max-w-2xl mx-auto px-6 py-12 text-sm text-[var(--body)]">
+  <h1 class="font-semibold mb-4">Aviso Legal</h1>
+  <p>Este sitio es propiedad de Puro Flusso. El contenido se ofrece con fines informativos y de reflexión. No nos hacemos responsables de decisiones tomadas a partir de las lecturas.</p>
+</div>

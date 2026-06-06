@@ -1,0 +1,67 @@
+---
+import { getLocale } from '$lib/i18n';
+export async function load(ctx) {
+  return { locale: getLocale(ctx), head: { title: 'Sobre Nosotros — Puro Flusso', description: 'La filosofía de Puro Flusso: recuperar el tiempo y el foco en un mundo diseñado para la distracción.' } };
+}
+---
+<div class="bg-[#0a0a0a] min-h-screen text-neutral-300 pb-32">
+  <div class="mx-auto max-w-7xl px-6 md:px-12">
+    <div class="mx-auto max-w-3xl">
+      <div class="mb-16">
+        <div class="flex items-center gap-4 mb-6">
+          <span class="h-px w-12 bg-[var(--accent)]"></span>
+          <p class="text-[12px] font-bold uppercase tracking-[0.4em] text-[var(--accent)]">Nuestra Historia</p>
+        </div>
+        <h1 class="font-display text-5xl md:text-7xl font-medium tracking-[-0.03em] text-white leading-[0.95]">
+          El fin de la <span class="text-neutral-500">obesidad digital.</span>
+        </h1>
+      </div>
+
+      <div class="space-y-16">
+        <p class="text-xl leading-relaxed text-neutral-400">
+          Puro Flusso nació como una respuesta necesaria al ruido constante. Vivimos en una era diseñada para fragmentar nuestra atención y capitalizar nuestro tiempo. Nuestra misión es simple pero radical: ayudarte a recuperar 10 horas a la semana de tiempo puro.
+        </p>
+
+        <section>
+          <h2 class="font-display text-3xl text-white mb-6">¿Por qué ahora?</h2>
+          <p class="text-neutral-400 leading-relaxed text-lg">
+            La tecnología debería ser una herramienta para potenciar nuestras capacidades, no un grillete que nos mantiene atados a notificaciones infinitas. Creemos en el minimalismo digital no como una privación, sino como una liberación. Menos apps, menos ruido, más vida real.
+          </p>
+        </section>
+
+        <section class="relative p-8 rounded-[2rem] bg-white/[0.03] border border-white/10">
+          <h2 class="font-display text-3xl text-white mb-8">Nuestros Pilares</h2>
+          <ul class="grid gap-8 md:grid-cols-2">
+            <li class="space-y-2">
+              <span class="text-[var(--accent)] font-bold tracking-tighter text-2xl">01</span>
+              <h3 class="text-white font-bold uppercase tracking-widest text-xs">Claridad Mental</h3>
+              <p class="text-sm text-neutral-500">Eliminamos lo superfluo para que puedas ver lo esencial.</p>
+            </li>
+            <li class="space-y-2">
+              <span class="text-[var(--accent)] font-bold tracking-tighter text-2xl">02</span>
+              <h3 class="text-white font-bold uppercase tracking-widest text-xs">Foco Profundo</h3>
+              <p class="text-sm text-neutral-500">Entrenamos la capacidad de concentrarse en un mundo distraído.</p>
+            </li>
+            <li class="space-y-2">
+              <span class="text-[var(--accent)] font-bold tracking-tighter text-2xl">03</span>
+              <h3 class="text-white font-bold uppercase tracking-widest text-xs">Tiempo Puro</h3>
+              <p class="text-sm text-neutral-500">Recuperamos horas que antes se perdían en el scroll infinito.</p>
+            </li>
+            <li class="space-y-2">
+              <span class="text-[var(--accent)] font-bold tracking-tighter text-2xl">04</span>
+              <h3 class="text-white font-bold uppercase tracking-widest text-xs">Sistemas Reales</h3>
+              <p class="text-sm text-neutral-500">Implementamos métodos que funcionan sin apps complejas.</p>
+            </li>
+          </ul>
+        </section>
+
+        <section>
+          <h2 class="font-display text-3xl text-white mb-6">La Revista</h2>
+          <p class="text-neutral-400 leading-relaxed text-lg">
+            No publicamos por publicar. Cada artículo en nuestra revista es una pieza de pensamiento lento, diseñada para ser leída con calma. Sin titulares clickbait, sin publicidad intrusiva. Solo texto, criterio y utilidad.
+          </p>
+        </section>
+      </div>
+    </div>
+  </div>
+</div>

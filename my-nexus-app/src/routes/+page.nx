@@ -1,0 +1,314 @@
+---
+import { homeCopy, getLocale } from '$lib/i18n';
+import { gql } from '$lib/gql';
+import { ARTICLES_HOME_QUERY, FLASH_NEWS_QUERY } from '$lib/queries';
+import { relativeTime } from '$lib/date-utils';
+
+export async function load(ctx) {
+  var locale = getLocale(ctx);
+  var t = homeCopy(locale);
+
+  var articles = [];
+  var flashNews = [];
+
+  try {
+    var resA = await gql(ARTICLES_HOME_QUERY, {}, { locale });
+    var resF = await gql(FLASH_NEWS_QUERY, {}, { locale });
+    articles = (resA && resA.articles) || [];
+    flashNews = (resF && resF.flashNews) || [];
+  } catch (e) {}
+
+  if (articles.length === 0) {
+    articles = [
+      {
+        id: 'm1',
+        title: 'Claude Opus 4.8 resuelve en un intento lo que antes fallaba: verificación formal de polígonos',
+        slug: 'mock-1',
+        excerpt: 'Un algoritmo de intersección de polígonos verificado formalmente, resuelto por IA en un solo intento. Lo que antes fallaba ahora es reproducible en entornos críticos.',
+        coverImage: 'https://images.unsplash.com/photo-1499750310107-5fef28a66643?w=1200&q=80',
+        publishedAt: new Date().toISOString(),
+        readTimeMinutes: 5,
+        tags: [{ name: 'Foco y Claridad' }]
+      },
+      {
+        id: 'm2',
+        title: 'Subway llega a Walmart: tu compra y un sándwich en 30 minutos',
+        slug: 'mock-2',
+        excerpt: 'La cadena de comida rápida se asocia con el gigante minorista para entregas ultrarrápidas.',
+        coverImage: 'https://images.unsplash.com/photo-1483058712412-4245e9b90334?w=800&q=80',
+        publishedAt: new Date().toISOString(),
+        readTimeMinutes: 3,
+        tags: [{ name: 'Negocios' }]
+      },
+      {
+        id: 'm3',
+        title: 'Screwworm llega a Texas: ganadería en alerta por parásito devorador',
+        slug: 'mock-3',
+        excerpt: 'Las autoridades sanitarias detectan los primeros casos del parásito en ganado local.',
+        coverImage: 'https://images.unsplash.com/photo-1506784983877-45594efa4cbe?w=800&q=80',
+        publishedAt: new Date().toISOString(),
+        readTimeMinutes: 6,
+        tags: [{ name: 'Bio-Hacking' }]
+      }
+    ];
+  }
+
+  return {
+    t: t,
+    locale: locale,
+    heroArticles: articles.slice(0, 3),
+    flashNews: flashNews.length > 0 ? flashNews : [{ title: 'Bienvenidos a la nueva era editorial de Nexus JS', slug: 'welcome' }],
+    moreFromRevista: articles.slice(3),
+    heroSideArticles: articles.slice(1, 3),
+    topFlashNews: flashNews.slice(0, 4),
+  };
+}
+---
+
+
+<div class="bg-[#0a0a0a] min-h-screen text-white selection:bg-accent selection:text-white">
+  
+  <!-- Premium Ticker -->
+  <div class="relative z-20 border-b border-white/[0.03] bg-black/40 backdrop-blur-md">
+    <div class="mx-auto max-w-7xl flex items-center h-12 px-6 md:px-12">
+      <div class="shrink-0 flex items-center gap-2 pr-6 border-r border-white/10">
+        <div class="relative flex h-2 w-2">
+          <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-accent opacity-75"></span>
+          <span class="relative inline-flex rounded-full h-2 w-2 bg-accent"></span>
+        </div>
+        <span class="text-[9px] font-black uppercase tracking-[0.4em] text-accent">Pulso</span>
+      </div>
+      <div class="overflow-hidden flex-1 relative">
+        <div class="ticker-track flex gap-16 whitespace-nowrap items-center h-full pl-10">
+          {#each pretext.flashNews as f}
+            <span class="text-[11px] text-neutral-500 font-bold uppercase tracking-widest hover:text-white transition-colors cursor-default">
+              {f.title}
+            </span>
+          {/each}
+          {#each pretext.flashNews as f}
+            <span class="text-[11px] text-neutral-500 font-bold uppercase tracking-widest hover:text-white transition-colors cursor-default">
+              {f.title}
+            </span>
+          {/each}
+        </div>
+        <div class="absolute inset-y-0 left-0 w-10 bg-gradient-to-r from-black/60 to-transparent z-10"></div>
+        <div class="absolute inset-y-0 right-0 w-10 bg-gradient-to-l from-black/60 to-transparent z-10"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- HERO -->
+  <section class="relative pb-20 md:pb-32 overflow-hidden">
+    <!-- ambient glow -->
+    <div class="pointer-events-none absolute inset-0 -z-10">
+      <div class="absolute left-1/4 top-0 h-[500px] w-[700px] -translate-x-1/2 rounded-full bg-accent/[0.07] blur-[160px]"></div>
+      <div class="absolute right-0 top-1/3 h-[300px] w-[400px] rounded-full bg-white/[0.02] blur-[100px]"></div>
+    </div>
+
+    <div class="mx-auto max-w-7xl px-6 md:px-12">
+
+      <!-- eyebrow -->
+      <div class="mb-8 flex items-center gap-4 hero-animate">
+        <div class="h-px w-8 bg-accent"></div>
+        <span class="text-[10px] font-black uppercase tracking-[0.4em] text-accent">Editorial destacado</span>
+      </div>
+
+      <div class="grid grid-cols-1 lg:grid-cols-[1fr_380px] xl:grid-cols-[1fr_420px] gap-6 items-stretch">
+
+        <!-- ── Main feature ── -->
+        {#if pretext.heroArticles[0]}
+          <a href="/articulo/{pretext.heroArticles[0].slug}" class="hero-animate"
+             class="group relative flex flex-col rounded-3xl overflow-hidden border border-white/[0.08] bg-neutral-950 shadow-[0_32px_80px_-16px_rgba(0,0,0,0.9)] transition-all duration-500 hover:border-accent/30 hover:shadow-[0_32px_80px_-16px_rgba(196,92,38,0.15)]">
+
+            <!-- image -->
+            <div class="relative flex-1 min-h-[260px] sm:min-h-[340px] overflow-hidden">
+              <img
+                src="{pretext.heroArticles[0].coverImage || 'https://images.unsplash.com/photo-1499750310107-5fef28a66643?w=1200&q=80'}"
+                alt="{pretext.heroArticles[0].title}"
+                class="hero-image-parallax absolute inset-0 h-full w-full object-cover transition-transform duration-[1200ms] group-hover:scale-[1.03]"
+              />
+              <div class="absolute inset-0 bg-gradient-to-t from-neutral-950 via-neutral-950/20 to-transparent"></div>
+            </div>
+
+            <!-- content -->
+            <div class="relative p-8 md:p-10 lg:p-12 hero-animate">
+              <div class="flex items-center gap-3 mb-5">
+                {#if pretext.heroArticles[0].tags && pretext.heroArticles[0].tags[0]}
+                  <span class="rounded-full bg-accent/15 border border-accent/30 px-3 py-1 text-[10px] font-black uppercase tracking-[0.25em] text-accent">
+                    {pretext.heroArticles[0].tags[0].name}
+                  </span>
+                {/if}
+                <span class="text-[10px] font-bold text-white/25 uppercase tracking-widest">{relativeTime(pretext.heroArticles[0].publishedAt)}</span>
+              </div>
+
+              <h1 class="font-display text-3xl md:text-4xl lg:text-5xl font-medium leading-[1.05] tracking-[-0.03em] text-white group-hover:text-white transition-colors max-w-2xl">
+                {pretext.heroArticles[0].title}
+              </h1>
+
+              <p class="mt-4 text-base text-neutral-400 leading-relaxed line-clamp-2 max-w-xl font-light">
+                {pretext.heroArticles[0].excerpt}
+              </p>
+
+              <div class="mt-7 flex items-center justify-between">
+                <div class="flex items-center gap-2 text-[10px] font-bold text-white/30 uppercase tracking-[0.2em]">
+                  <div class="h-1.5 w-1.5 rounded-full bg-accent"></div>
+                  <span>{pretext.heroArticles[0].readTimeMinutes} min lectura</span>
+                </div>
+                <span class="flex items-center gap-2 text-[11px] font-black uppercase tracking-widest text-accent opacity-0 group-hover:opacity-100 transition-all translate-x-3 group-hover:translate-x-0 duration-300">
+                  Leer artículo
+                  <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+                </span>
+              </div>
+            </div>
+          </a>
+        {/if}
+
+        <!-- ── Side stack ── -->
+        <div class="flex flex-col gap-5 hero-animate">
+          <p class="text-[10px] font-black uppercase tracking-[0.35em] text-neutral-600 mb-1">También esta semana</p>
+
+          {#each pretext.heroSideArticles as art}
+            <a href="/articulo/{art.slug}"
+               class="group flex gap-5 rounded-2xl border border-white/[0.06] bg-white/[0.02] p-5 transition-all duration-400 hover:bg-white/[0.04] hover:border-white/[0.12] hover:-translate-y-0.5">
+
+              <!-- thumbnail -->
+              <div class="relative shrink-0 w-24 h-24 rounded-xl overflow-hidden bg-neutral-800">
+                <img src="{art.coverImage || 'https://images.unsplash.com/photo-1506784983877-45594efa4cbe?w=400&q=80'}"
+                     alt="{art.title}"
+                     class="absolute inset-0 h-full w-full object-cover transition-transform duration-500 group-hover:scale-110" />
+              </div>
+
+              <!-- text -->
+              <div class="flex flex-col justify-between min-w-0">
+                {#if art.tags && art.tags[0]}
+                  <p class="text-[9px] font-black uppercase tracking-[0.3em] text-accent mb-1.5">{art.tags[0].name}</p>
+                {/if}
+                <h3 class="text-sm font-bold text-white leading-snug group-hover:text-accent transition-colors line-clamp-3">
+                  {art.title}
+                </h3>
+                <span class="mt-2 text-[10px] font-bold text-neutral-600 uppercase tracking-widest">{relativeTime(art.publishedAt)}</span>
+              </div>
+            </a>
+          {/each}
+
+          <!-- CTA box -->
+          <a href="/revista"
+             class="group mt-auto flex items-center justify-between rounded-2xl border border-white/[0.06] bg-white/[0.02] px-6 py-5 transition-all duration-400 hover:border-accent/30 hover:bg-accent/[0.04]">
+            <div>
+              <p class="text-[10px] font-black uppercase tracking-[0.3em] text-neutral-500 mb-1">Archivo completo</p>
+              <p class="text-sm font-bold text-white">Ver toda la revista</p>
+            </div>
+            <div class="flex h-9 w-9 items-center justify-center rounded-full border border-white/10 text-neutral-500 transition-all group-hover:border-accent/40 group-hover:text-accent group-hover:translate-x-1 duration-300">
+              <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+            </div>
+          </a>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- RECIENTES GRID -->
+  {#if pretext.moreFromRevista.length > 0}
+    <section class="mx-auto max-w-7xl px-6 py-24 md:px-12 border-t border-white/[0.05]">
+      
+      <!-- Relámpago Section (Inside grid area for better flow) -->
+      {#if pretext.flashNews.length > 0}
+        <div class="mb-24 relative relampago-grid">
+          <div class="absolute -inset-8 -z-10 rounded-[4rem] bg-white/[0.01] border border-white/5 backdrop-blur-3xl"></div>
+          
+          <div class="flex items-center justify-between gap-4 mb-12">
+            <div class="flex items-center gap-3">
+              <div class="flex h-10 w-10 items-center justify-center rounded-full bg-accent/10 text-accent border border-accent/20">
+                 <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m13 2-2 10h8l-2 10"/></svg>
+              </div>
+              <div>
+                <h2 class="text-xs font-black uppercase tracking-[0.3em] text-accent">Relámpago · 60 seg</h2>
+                <p class="text-[10px] text-neutral-500 font-bold uppercase tracking-widest mt-1">Pulso informativo ultrarrápido</p>
+              </div>
+            </div>
+            <div class="h-px flex-1 bg-gradient-to-r from-accent/20 to-transparent"></div>
+            <a href="/relampago" class="px-4 py-2 rounded-full border border-white/10 text-[10px] font-black uppercase tracking-widest text-neutral-400 hover:text-white hover:border-accent/40 transition-all">
+              Ver todo
+            </a>
+          </div>
+
+          <div class="grid gap-6 md:grid-cols-2">
+            {#each pretext.topFlashNews as f}
+              <div class="relampago-card group relative flex flex-col rounded-3xl border border-white/5 bg-white/[0.02] p-8 transition-all duration-500 hover:border-accent/30 hover:bg-white/[0.04]">
+                <div class="flex items-center justify-between mb-6">
+                  <span class="px-3 py-1 rounded-full bg-accent/10 border border-accent/20 text-[9px] font-black uppercase tracking-widest text-accent">
+                    Esencial
+                  </span>
+                  <span class="text-[10px] font-bold text-neutral-600 uppercase tracking-widest">Reciente</span>
+                </div>
+                
+                <h3 class="text-xl font-display font-medium text-white group-hover:text-accent transition-colors leading-tight mb-4">
+                  {f.title}
+                </h3>
+                
+                <p class="text-sm leading-relaxed text-neutral-400 line-clamp-3 font-light mb-6">
+                  {f.summary}
+                </p>
+                
+                {#if f.hack}
+                  <div class="mt-auto">
+                    <div class="rounded-2xl bg-black/40 p-4 border border-white/5 ring-1 ring-white/5">
+                      <p class="text-[11px] leading-relaxed text-neutral-300 italic">
+                        <span class="text-accent font-black uppercase tracking-widest not-italic mr-2">Hack:</span>
+                        {f.hack}
+                      </p>
+                    </div>
+                  </div>
+                {/if}
+
+                {#if f.sourceUrl}
+                  <a href="{f.sourceUrl}" target="_blank" rel="noopener noreferrer" class="absolute inset-0 z-10" aria-label="Fuente"></a>
+                {/if}
+              </div>
+            {/each}
+          </div>
+        </div>
+      {/if}
+
+      <div class="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-16 section-reveal">
+        <div>
+          <span class="text-[10px] font-black uppercase tracking-[0.4em] text-accent mb-4 block">Archivo Editorial</span>
+          <h2 class="font-display text-4xl md:text-5xl text-white tracking-tight">Más del pulso</h2>
+        </div>
+        <a href="/revista" class="group flex items-center gap-3 text-[11px] font-black uppercase tracking-[0.3em] text-neutral-500 hover:text-white transition-colors">
+          <span>Ver colección completa</span>
+          <span class="w-8 h-px bg-neutral-700 group-hover:bg-accent transition-all group-hover:w-12"></span>
+        </a>
+      </div>
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-x-8 gap-y-16 animate-grid">
+      {#each pretext.moreFromRevista as art}
+          <a href="/articulo/{art.slug}" class="animate-card group block border-l border-white/5 pl-8 hover:border-accent/40 transition-colors duration-500">
+            <div class="relative w-full pb-[60%] rounded-2xl overflow-hidden bg-neutral-900 mb-8 border border-white/5">
+              <img src="{art.coverImage || 'https://images.unsplash.com/photo-1516259762381-22954d7d3ad2?w=800&q=80'}" alt="Grid" class="absolute inset-0 h-full w-full object-cover grayscale opacity-60 transition-all duration-700 group-hover:grayscale-0 group-hover:opacity-100 group-hover:scale-105" />
+            </div>
+            <div class="space-y-4">
+              <span class="text-[9px] font-black uppercase tracking-[0.3em] text-neutral-500 group-hover:text-accent transition-colors">{art.tags?.[0]?.name || 'Revista'}</span>
+              <h3 class="text-2xl font-display font-medium text-white group-hover:text-accent transition-colors leading-tight line-clamp-2">
+                {art.title}
+              </h3>
+              <p class="text-neutral-500 text-sm leading-relaxed line-clamp-2 font-light">
+                {art.excerpt}
+              </p>
+            </div>
+          </a>
+        {/each}
+      </div>
+    </section>
+  {/if}
+</div>
+
+<nexus-island client:visible src="$lib/islands/home-animations.ts"></nexus-island>
+
+<style>
+  .ticker-track { animation: ticker-scroll 60s linear infinite; }
+  @keyframes ticker-scroll { from { transform: translateX(0); } to { transform: translateX(-50%); } }
+  .ticker-track:hover { animation-play-state: paused; }
+  .font-display { font-family: ui-serif, Georgia, serif; }
+  .line-clamp-2 { display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+</style>

@@ -1,0 +1,172 @@
+---
+import { getLocale } from '$lib/i18n';
+import { gql } from '$lib/gql';
+import { ARTICLES_QUERY, FLASH_NEWS_REVISTA_QUERY, ARTICLE_COUNT_QUERY } from '$lib/queries';
+import { relativeTime } from '$lib/date-utils';
+
+export async function load(ctx) {
+  const locale = getLocale(ctx);
+
+  const [arts, flashes, count] = await Promise.allSettled([
+    gql(ARTICLES_QUERY, { limit: 24 }, { locale }),
+    gql(FLASH_NEWS_REVISTA_QUERY, { limit: 12 }, { locale }),
+    gql(ARTICLE_COUNT_QUERY, {}, { locale }),
+  ]);
+
+  if (arts.status === 'rejected') {
+    console.error('Revista Articles Load Error:', arts.reason);
+  }
+
+  let articles = (arts.status === 'fulfilled' && arts.value && arts.value.articles) || [];
+  let totalCount = (count.status === 'fulfilled' && count.value && count.value.articleCount) || articles.length;
+  const flashesData = (flashes.status === 'fulfilled' && flashes.value && flashes.value.flashNews) || [];
+
+  console.log('[Revista Load] articles:', articles.length, 'totalCount:', totalCount);
+  if (count.status === 'rejected') console.error('[Revista Load] Count Query Failed:', count.reason);
+
+  // SI EL BACKEND FALLA O ESTÁ VACÍO, USAMOS MOCKS
+  if (articles.length === 0) {
+    articles = Array.from({ length: 24 }).map((_, i) => ({
+      id: `mock-${i}`,
+      title: [
+        'Minimalismo Digital en 2026: Guía de Supervivencia',
+        'La Paradoja de la Productividad Consciente',
+        'Diseño de Interfaces para el Enfoque Profundo',
+        'Neurociencia de la Claridad Mental',
+        'El Arte de la Desconexión Programada',
+        'Sistemas de Pensamiento en la Era de la IA'
+      ][i % 6],
+      slug: `mock-article-${i}`,
+      excerpt: 'Descubre cómo los principios del diseño consciente pueden transformar tu relación con la tecnología y mejorar tu enfoque diario.',
+      readTimeMinutes: 5 + (i % 10),
+      publishedAt: new Date(Date.now() - i * 3600000 * 24).toISOString(),
+      coverImage: [
+        'https://images.unsplash.com/photo-1499750310107-5fef28a66643?w=800&q=80',
+        'https://images.unsplash.com/photo-1506784983877-45594efa4cbe?w=800&q=80',
+        'https://images.unsplash.com/photo-1516259762381-22954d7d3ad2?w=800&q=80',
+        'https://images.unsplash.com/photo-1507413245164-6160d8298b31?w=800&q=80',
+        'https://images.unsplash.com/photo-1454165833767-027eeed15c3e?w=800&q=80',
+        'https://images.unsplash.com/photo-1488190211105-8b0e65b80b4e?w=800&q=80'
+      ][i % 6],
+      tags: [{ name: ['Mindfulness', 'Productividad', 'Diseño', 'Salud', 'Tech', 'Futuro'][i % 6] }]
+    }));
+    totalCount = 148; // High number to trigger scroll logic
+  }
+
+  return {
+    locale,
+    articles: articles.map(a => ({ ...a, tags: a.tags || [] })),
+    flashes: flashesData,
+    topFlashes: flashesData.slice(0, 8),
+    totalCount: totalCount,
+    head: { 
+      title: `Revista — Puro Flusso`,
+      description: "Archivo editorial de minimalismo digital, productividad consciente y claridad mental."
+    },
+  };
+}
+---
+
+<div class="render-optimized min-h-screen bg-[#0a0a0a]">
+  <!-- Page header -->
+  <div class="revista-header-animate relative overflow-hidden border-b border-white/[0.06] bg-gradient-to-b from-[#111] to-[#0a0a0a] px-6 pb-12 pt-28 md:px-12 md:pb-14 md:pt-32">
+    <div class="pointer-events-none absolute -right-32 top-0 h-[500px] w-[500px] rounded-full bg-[var(--accent)]/[0.04] blur-[120px]" aria-hidden></div>
+    <div class="mx-auto max-w-7xl">
+      <nav class="mb-8 flex flex-wrap items-center gap-x-3 gap-y-2 text-xs font-medium uppercase tracking-[0.2em]">
+        <a href="/" class="text-[var(--accent)] transition-colors hover:text-white">← Portada</a>
+        <span class="text-neutral-700" aria-hidden>·</span>
+        <a href="/relampago" class="text-neutral-500 transition-colors hover:text-white">Relámpago</a>
+      </nav>
+
+      <div class="flex flex-col gap-8 sm:flex-row sm:items-end sm:justify-between">
+        <div class="revista-header-child">
+          <div class="mb-4 h-px w-12 bg-[var(--accent)]"></div>
+          <h1 class="font-display text-5xl font-medium tracking-[-0.03em] text-white sm:text-6xl md:text-7xl leading-none">
+            Revista
+          </h1>
+          <p class="mt-5 max-w-lg text-base leading-relaxed text-neutral-400">
+            Todo el archivo editorial — artículos largos y noticias relámpago en un solo lugar.
+          </p>
+        </div>
+
+        <dl class="flex shrink-0 gap-8 revista-header-child">
+          <div class="text-right">
+            <dt class="text-[10px] font-bold uppercase tracking-[0.25em] text-neutral-600">Artículos</dt>
+            <dd class="font-display mt-1 text-5xl font-medium tabular-nums text-white leading-none">
+              {pretext.totalCount}
+            </dd>
+          </div>
+          {#if pretext.flashes.length}
+            <div class="text-right">
+              <dt class="text-[10px] font-bold uppercase tracking-[0.25em] text-neutral-600">Relámpago</dt>
+              <dd class="font-display mt-1 text-5xl font-medium tabular-nums text-[var(--accent)] leading-none">
+                {pretext.flashes.length}+
+              </dd>
+            </div>
+          {/if}
+        </dl>
+      </div>
+    </div>
+  </div>
+
+  <!-- Main content -->
+  <div class="px-6 py-12 md:px-12 md:py-16">
+    <div id="revista-config" data-locale="{pretext.locale}" data-total-count="{pretext.totalCount}" style="display:none"></div>
+    <div class="mx-auto max-w-7xl">
+      <div class="flex flex-col gap-12 lg:grid lg:grid-cols-[minmax(0,1fr)_minmax(272px,19rem)] lg:items-start lg:gap-x-10 xl:gap-x-14">
+        <div class="min-w-0">
+          <div id="articles-container" class="grid gap-x-8 gap-y-12 sm:grid-cols-2">
+            {#each pretext.articles as a}
+              <a href="/articulo/{a.slug}" class="revista-card-animate group block p-4 rounded-2xl border border-white/5 bg-white/[0.01] hover:bg-white/[0.03] transition-all duration-500 hover:border-accent/20">
+                <div class="relative aspect-[16/9] mb-6 overflow-hidden rounded-xl bg-neutral-900 border border-white/5 shadow-xl">
+                  <img src="{a.coverImage || 'https://images.unsplash.com/photo-1516259762381-22954d7d3ad2?w=800&q=80'}" alt="{a.title}" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" />
+                </div>
+                <div class="flex gap-2 text-[10px] font-black uppercase tracking-widest text-accent mb-4">
+                  {#each a.tags as tag}<span>{tag.name}</span>{/each}
+                </div>
+                <h3 class="font-display text-2xl leading-tight text-white mb-4 group-hover:text-accent transition-colors line-clamp-2">{a.title}</h3>
+                {#if a.excerpt}<p class="text-sm text-neutral-400 line-clamp-3 mb-6 font-light leading-relaxed">{a.excerpt}</p>{/if}
+                <div class="flex items-center justify-between pt-4 border-t border-white/5">
+                  <div class="flex items-center gap-3 text-[10px] text-neutral-500 font-bold uppercase tracking-widest">
+                    <span>{a.readTimeMinutes || 6} min</span>
+                    <span class="w-1 h-1 rounded-full bg-neutral-700"></span>
+                    <span>{relativeTime(a.publishedAt)}</span>
+                  </div>
+                  <span class="text-[10px] font-black text-accent opacity-0 group-hover:opacity-100 transition-all translate-x-2 group-hover:translate-x-0">LEER →</span>
+                </div>
+              </a>
+            {/each}
+          </div>
+          
+          <nexus-island client:load src="$lib/islands/infinite-scroll.ts" class="mt-12 w-full min-h-[100px] flex items-center justify-center flex-col gap-4"></nexus-island>
+        </div>
+
+        {#if pretext.flashes.length}
+          <aside class="revista-sidebar w-full shrink-0 lg:sticky lg:top-32 lg:self-start">
+            <div class="rounded-2xl border border-white/5 bg-white/[0.02] p-6 backdrop-blur-sm">
+              <h3 class="text-[10px] font-bold uppercase tracking-[0.25em] text-[var(--accent)] mb-6">Relámpago reciente</h3>
+              <div class="space-y-6">
+                {#each pretext.topFlashes as f}
+                  <a href="/relampago#{f.slug}" class="group block border-b border-white/5 pb-6 last:border-0 last:pb-0">
+                    <h4 class="text-sm font-bold text-white leading-snug mb-2 group-hover:text-[var(--accent)] transition-colors">{f.title}</h4>
+                    <p class="text-xs text-neutral-500 line-clamp-2">{f.summary}</p>
+                  </a>
+                {/each}
+              </div>
+              <a href="/relampago" class="mt-8 block text-center py-3 rounded-xl border border-white/5 text-[10px] font-bold uppercase tracking-widest text-neutral-400 hover:text-white hover:border-white/10 transition">
+                Ver todo el pulso
+              </a>
+            </div>
+          </aside>
+        {/if}
+      </div>
+    </div>
+  </div>
+</div>
+
+<nexus-island client:visible src="$lib/islands/revista-animations.ts"></nexus-island>
+
+<style>
+  .line-clamp-2 { display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+  .line-clamp-3 { display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; }
+</style>

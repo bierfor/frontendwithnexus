@@ -1,0 +1,150 @@
+---
+import {
+  getLocale,
+  langHref,
+  layoutCopy,
+  pathWithLang,
+} from '$lib/i18n';
+---
+
+<html lang="{getLocale(ctx)}">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="{layoutCopy(getLocale(ctx)).metaDescription}">
+    <title>{layoutCopy(getLocale(ctx)).appName}</title>
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@500;600;700&display=swap" rel="stylesheet">
+  </head>
+  <body class="bg-[#0a0a0a] text-white antialiased selection:bg-accent/30">
+    <!-- View Transition overlay -->
+    <div id="vt-overlay" class="fixed inset-0 z-[9999] bg-[#0a0a0a] pointer-events-none opacity-0 transition-opacity duration-300"></div>
+
+    <!-- Reading progress bar (global) -->
+    <div class="fixed top-0 left-0 right-0 z-[60] h-[2px] bg-transparent">
+      <div id="reading-progress-bar" class="h-full bg-accent w-0 transition-[width] duration-150 ease-out"></div>
+    </div>
+
+    <nexus-island client:idle src="$lib/islands/smooth-scroll.ts"></nexus-island>
+
+    <!-- Header: Utilizando solo clases de Tailwind -->
+    <header class="fixed top-0 left-0 right-0 z-50 pointer-events-none p-6">
+      <div class="max-w-5xl mx-auto pointer-events-auto">
+        <div class="flex items-center justify-between rounded-full border border-white/10 bg-black/60 px-6 py-3 backdrop-blur-xl shadow-2xl ring-1 ring-white/5">
+          <a href="{pathWithLang(ctx, '/')}" class="transition-opacity hover:opacity-80">
+            <img src="/logo-header.svg" alt="Logo" class="h-8 w-auto" />
+          </a>
+
+          <nav class="hidden md:flex items-center gap-8">
+            <a href="{pathWithLang(ctx, '/')}" class="text-[11px] font-bold uppercase tracking-[0.2em] text-neutral-400 hover:text-white transition-colors">
+              {layoutCopy(getLocale(ctx)).navHome}
+            </a>
+            <a href="{pathWithLang(ctx, '/revista')}" class="text-[11px] font-bold uppercase tracking-[0.2em] text-neutral-400 hover:text-white transition-colors">
+              {layoutCopy(getLocale(ctx)).navRevista}
+            </a>
+            <a href="{pathWithLang(ctx, '/relampago')}" class="text-[11px] font-bold uppercase tracking-[0.2em] text-neutral-400 hover:text-white transition-colors">
+              {layoutCopy(getLocale(ctx)).navRelampago}
+            </a>
+          </nav>
+
+          <div class="flex items-center gap-6">
+            <div class="hidden sm:flex items-center gap-3 text-[10px] font-black tracking-widest">
+              <a href="{langHref(ctx, 'es')}" class="{getLocale(ctx) === 'es' ? 'text-accent' : 'text-neutral-500 hover:text-white'}">ES</a>
+              <a href="{langHref(ctx, 'en')}" class="{getLocale(ctx) === 'en' ? 'text-accent' : 'text-neutral-500 hover:text-white'}">EN</a>
+            </div>
+            <a href="{pathWithLang(ctx, '/boletin')}" class="hidden sm:block bg-white text-black text-[11px] px-5 py-2.5 rounded-full font-bold uppercase tracking-widest transition-transform hover:scale-105 active:scale-95">
+              {layoutCopy(getLocale(ctx)).navBoletin}
+            </a>
+            <button id="mobile-menu-toggle" class="md:hidden flex flex-col gap-1.5 p-2 group" aria-label="Menú">
+              <span class="block h-[2px] w-5 bg-white transition-transform group-hover:bg-accent"></span>
+              <span class="block h-[2px] w-5 bg-white transition-transform group-hover:bg-accent"></span>
+              <span class="block h-[2px] w-4 bg-white transition-transform group-hover:bg-accent group-hover:w-5"></span>
+            </button>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <!-- Mobile Menu -->
+    <div id="mobile-menu-overlay" class="fixed inset-0 z-[55] bg-black/80 backdrop-blur-sm opacity-0 pointer-events-none transition-opacity duration-300"></div>
+    <div id="mobile-menu-panel" class="fixed top-0 right-0 bottom-0 z-[56] w-[280px] bg-[#0a0a0a] border-l border-white/10 translate-x-full transition-transform duration-300 ease-out flex flex-col">
+      <div class="flex items-center justify-between p-6 border-b border-white/5">
+        <span class="text-[11px] font-black uppercase tracking-[0.3em] text-neutral-500">Menú</span>
+        <button id="mobile-menu-close" class="p-2 text-neutral-400 hover:text-white transition-colors" aria-label="Cerrar">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>
+        </button>
+      </div>
+      <nav class="flex flex-col p-6 gap-1">
+        <a href="{pathWithLang(ctx, '/')}" class="mobile-menu-link py-3 text-lg font-medium text-white hover:text-accent transition-colors border-b border-white/5">{layoutCopy(getLocale(ctx)).navHome}</a>
+        <a href="{pathWithLang(ctx, '/revista')}" class="mobile-menu-link py-3 text-lg font-medium text-white hover:text-accent transition-colors border-b border-white/5">{layoutCopy(getLocale(ctx)).navRevista}</a>
+        <a href="{pathWithLang(ctx, '/relampago')}" class="mobile-menu-link py-3 text-lg font-medium text-white hover:text-accent transition-colors border-b border-white/5">{layoutCopy(getLocale(ctx)).navRelampago}</a>
+        <a href="{pathWithLang(ctx, '/sobre-nosotros')}" class="mobile-menu-link py-3 text-lg font-medium text-white hover:text-accent transition-colors border-b border-white/5">{layoutCopy(getLocale(ctx)).navSobre}</a>
+        <a href="{pathWithLang(ctx, '/contacto')}" class="mobile-menu-link py-3 text-lg font-medium text-white hover:text-accent transition-colors border-b border-white/5">Contacto</a>
+      </nav>
+      <div class="mt-auto p-6">
+        <a href="{pathWithLang(ctx, '/boletin')}" class="block w-full text-center bg-accent text-white text-[11px] px-5 py-3 rounded-full font-bold uppercase tracking-widest transition-transform hover:scale-105 active:scale-95">
+          {layoutCopy(getLocale(ctx)).navBoletin}
+        </a>
+      </div>
+    </div>
+
+    <nexus-island client:load src="$lib/islands/mobile-menu.ts"></nexus-island>
+    <nexus-island client:idle src="$lib/islands/view-transitions.ts"></nexus-island>
+
+    <main class="relative z-10 pt-32 min-h-screen">
+      <!--nexus:slot-->
+    </main>
+
+    <footer class="relative mt-auto w-full overflow-hidden bg-[#0a0a0a] pt-24 pb-12 text-neutral-400">
+      <div class="pointer-events-none absolute bottom-0 left-1/2 -z-10 h-[500px] w-[1000px] -translate-x-1/2 rounded-full bg-[var(--accent)]/5 blur-[120px]"></div>
+      <div class="mx-auto max-w-7xl px-6 md:px-12">
+        <div class="grid grid-cols-1 gap-16 lg:grid-cols-2 lg:gap-24">
+          <div class="flex flex-col items-start">
+            <a href="/" class="group flex items-center gap-3">
+              <div class="flex h-10 w-10 items-center justify-center rounded-full bg-[var(--accent)] text-white transition-transform duration-500 group-hover:rotate-180">
+                <span class="font-bold text-base">PF</span>
+              </div>
+              <span class="text-xl font-bold tracking-[0.2em] text-white">PURO FLUSSO</span>
+            </a>
+            <p class="mt-8 max-w-md text-lg leading-relaxed text-neutral-400">
+              El fin de la obesidad digital. Ideas para recuperar tu tiempo, foco y claridad mental en un mundo diseñado para distraerte.
+            </p>
+          </div>
+
+          <div class="grid grid-cols-2 gap-12 sm:grid-cols-3">
+            <div class="flex flex-col gap-6">
+              <h3 class="text-[11px] font-bold uppercase tracking-[0.3em] text-white">Explora</h3>
+              <nav class="flex flex-col gap-4 text-sm">
+                <a href="{pathWithLang(ctx, '/revista')}" class="transition-colors hover:text-[var(--accent)]">Revista</a>
+                <a href="{pathWithLang(ctx, '/relampago')}" class="transition-colors hover:text-[var(--accent)]">Relámpago</a>
+                <a href="{pathWithLang(ctx, '/sobre-nosotros')}" class="transition-colors hover:text-[var(--accent)]">Sobre Nosotros</a>
+                <a href="{pathWithLang(ctx, '/contacto')}" class="transition-colors hover:text-[var(--accent)]">Contacto</a>
+                <a href="{pathWithLang(ctx, '/boletin')}" class="transition-colors hover:text-[var(--accent)]">Boletín</a>
+              </nav>
+            </div>
+            <div class="flex flex-col gap-6">
+              <h3 class="text-[11px] font-bold uppercase tracking-[0.3em] text-white">Legal</h3>
+              <nav class="flex flex-col gap-4 text-sm">
+                <a href="/legal/aviso-legal" class="transition-colors hover:text-[var(--accent)]">Aviso legal</a>
+                <a href="/legal/privacidad" class="transition-colors hover:text-[var(--accent)]">Privacidad</a>
+              </nav>
+            </div>
+          </div>
+        </div>
+
+        <div class="mt-24 flex flex-col items-center justify-between gap-8 border-t border-white/5 pt-12 md:flex-row">
+          <p class="text-xs tracking-widest text-neutral-600">© {new Date().getFullYear()} PURO FLUSSO · TU TIEMPO ES PURO</p>
+          <div class="flex items-center gap-2 rounded-full border border-white/5 bg-white/[0.02] px-4 py-2 text-[10px] font-bold uppercase tracking-[0.2em] text-neutral-500">
+            <span class="relative flex h-2 w-2">
+              <span class="absolute inline-flex h-full w-full animate-ping rounded-full bg-emerald-400 opacity-75"></span>
+              <span class="relative inline-flex h-2 w-2 rounded-full bg-emerald-500"></span>
+            </span>
+            Sistema en Línea
+          </div>
+        </div>
+      </div>
+    </footer>
+  </body>
+</html>

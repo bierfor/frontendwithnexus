@@ -1,0 +1,73 @@
+---
+import { flashCopy, getLocale } from '$lib/i18n';
+import { gql } from '$lib/gql';
+import { FLASH_NEWS_REVISTA_QUERY } from '$lib/queries';
+
+export async function load(ctx) {
+  const locale = getLocale(ctx);
+  const t = flashCopy(locale);
+
+  const data = await gql(FLASH_NEWS_REVISTA_QUERY, { limit: 30 }, { locale });
+  return {
+    locale,
+    t,
+    items: data.flashNews || [],
+    head: { 
+      title: `${t.title} — Puro Flusso`,
+      description: "Noticias ultracondensadas: gancho, resumen y hack en segundos."
+    },
+  };
+}
+---
+<div class="render-optimized px-6 py-20 md:px-0 md:py-32">
+  <div class="mx-auto max-w-6xl">
+    <div class="flex flex-wrap items-center gap-4">
+      <a href="/revista" class="text-sm font-medium text-[var(--accent)] hover:underline">← Revista</a>
+      <span class="hidden text-neutral-600 sm:inline">·</span>
+      <a href="/" class="hidden text-sm font-medium text-neutral-500 hover:text-white sm:inline">Portada</a>
+    </div>
+
+    <p class="mt-8 text-[11px] font-bold uppercase tracking-[0.2em] text-neutral-500">Formato flash</p>
+    <h1 class="font-display mt-3 text-4xl md:text-5xl font-medium tracking-tight text-white">{pretext.t.title}</h1>
+    <p class="mt-4 max-w-2xl text-[15px] leading-relaxed text-neutral-400">
+      Lo esencial del día sin ruido: título con gancho, dos frases de contexto y un hack accionable.
+      Cada tarjeta enlaza a la fuente cuando está disponible.
+    </p>
+
+    {#if pretext.items.length === 0}
+      <p class="mt-12 max-w-lg text-sm leading-relaxed text-neutral-500">
+        Aún no hay noticias relámpago publicadas.
+      </p>
+    {:else}
+      <div class="mt-12 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+        {#each pretext.items as f}
+          <div id="{f.slug}" class="group relative flex flex-col rounded-2xl border border-white/5 bg-white/[0.02] p-6 transition-all hover:border-white/10 hover:bg-white/[0.04]">
+            <div class="flex items-center gap-2 mb-4">
+               <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="text-[var(--accent)]">
+                <path d="m13 2-2 10h8l-2 10"/>
+              </svg>
+              <span class="text-[9px] font-bold uppercase tracking-[0.2em] text-[var(--accent)]">Relámpago</span>
+            </div>
+            
+            <h2 class="text-lg font-bold leading-snug text-white mb-3">{f.title}</h2>
+            <p class="text-sm text-neutral-400 mb-6 flex-1">{f.summary}</p>
+            
+            {#if f.hack}
+              <div class="mt-auto pt-4 border-t border-white/5">
+                <p class="text-[10px] font-bold uppercase tracking-widest text-neutral-500 mb-1">Hack</p>
+                <p class="text-[11px] text-neutral-300 italic">{f.hack}</p>
+              </div>
+            {/if}
+
+            {#if f.sourceUrl}
+              <a href="{f.sourceUrl}" target="_blank" rel="noopener noreferrer" class="absolute inset-0 z-10" aria-label="Leer más"></a>
+              <div class="mt-4 text-[10px] font-bold uppercase tracking-widest text-[var(--accent)] group-hover:underline">
+                {f.sourceLabel || 'Fuente'} →
+              </div>
+            {/if}
+          </div>
+        {/each}
+      </div>
+    {/if}
+  </div>
+</div>

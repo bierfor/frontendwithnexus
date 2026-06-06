@@ -1,0 +1,9 @@
+---
+import { getLocale } from '$lib/i18n';
+export async function load(ctx) { return { locale: getLocale(ctx), head: { title: 'Privacidad — Puro Flusso' } }; }
+---
+<div class="max-w-2xl mx-auto px-6 py-12 text-sm text-[var(--body)]">
+  <h1 class="font-semibold mb-4">Privacidad</h1>
+  <p>Respetamos tu atención. Usamos un identificador anónimo (readerKey) almacenado localmente para mejorar recomendaciones. No vendemos datos. Los leads (emails) se usan solo para el boletín.</p>
+  <p class="mt-4">Para borrar datos o consultas: hola@puroflusso.com</p>
+</div>
