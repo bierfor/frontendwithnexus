@@ -14,15 +14,15 @@
     "check": "node ./node_modules/@nexus_js/cli/dist/bin.js check"
   },
   "dependencies": {
-    "@nexus_js/runtime": "^0.9.29",
+    "@nexus_js/runtime": "^0.9.30",
     "@studio-freight/lenis": "^1.0.42",
     "gsap": "^3.15.0"
   },
   "devDependencies": {
-    "@nexus_js/cli": "^0.9.29",
-    "@nexus_js/compiler": "^0.9.29",
-    "@nexus_js/content": "^0.9.28",
-    "@nexus_js/server": "^0.9.29",
+    "@nexus_js/cli": "^0.9.30",
+    "@nexus_js/compiler": "^0.9.30",
+    "@nexus_js/content": "^0.9.30",
+    "@nexus_js/server": "^0.9.30",
     "@tailwindcss/postcss": "^4.3.0",
     "@types/node": "^25.9.1",
     "autoprefixer": "^10.5.0",
